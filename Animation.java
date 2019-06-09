@@ -12,6 +12,8 @@ import java.awt.image.BufferedImage;
 import java.io.*;
 
 import java.net.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 
 import javax.imageio.*;
@@ -24,18 +26,18 @@ import javax.swing.event.*;
 
 public class Animation extends JFrame {
 	
-	static final int SLIDER_MIN = 0;
-	static final int SLIDER_MAX = 10;
+	static final int SLIDER_MIN = 5;
+	static final int SLIDER_MAX = 50;
 	static final int SLIDER_INIT = 5;
 	
 	JPanel panelAnimation1;
-	JPanel panelAnimation2;
+	AnimationPanel panelAnimation2;
 	JPanel panelAnimation3;
 	JPanel panelAnimation4;
 	JPanel panelAnimation5;
 	JButton buttonON;
 	JButton buttonColorBackground;
-	JButton buttonColorAniamtion;
+	JButton buttonColorAnimation;
 	JSlider slider;
 	JLabel labelLambda;
 	JLabel labelSlider;
@@ -46,6 +48,8 @@ public class Animation extends JFrame {
 	JMenuBar menuBar;
     JMenu menu;
     JMenuItem menuItem1;
+    
+    public static int lambda;
 	
 	
 	public  Animation()  throws HeadlessException{
@@ -84,7 +88,7 @@ public class Animation extends JFrame {
 		
 		
 		panelAnimation1=new JPanel();
-		panelAnimation2=new JPanel();
+		panelAnimation2=new AnimationPanel();
 		panelAnimation3=new JPanel();
 		panelAnimation4=new JPanel();
 		panelAnimation5=new JPanel();
@@ -104,12 +108,37 @@ public class Animation extends JFrame {
 		labelLambda.setHorizontalAlignment(JLabel.CENTER);
 		SpinnerNumberModel model1 = new SpinnerNumberModel(0.0, 0.0, 9.0, 1.0);  
 		spinner = new JSpinner(model1);
+		
+		 spinner.addChangeListener(new ChangeListener() {
+	            @Override
+	            public void stateChanged(ChangeEvent e) {
+	            	lambda = (int)spinner.getValue();
+	            
+	            }
+		 });
+		
 		panelAnimation4.add(spinner);
+		
 		buttonColorBackground=new JButton("Wybierz kolor tła");
 		panelAnimation4.add(buttonColorBackground);
 		buttonColorBackground.addActionListener(new Colors());
-		buttonColorAniamtion=new JButton("Wybierz kolor animacji");
-		panelAnimation4.add(buttonColorAniamtion);
+		
+		
+		buttonColorAnimation=new JButton("Wybierz kolor animacji");
+		
+		ActionListener AnimationColorListener = new ActionListener()
+	   	{
+	    	public void actionPerformed(ActionEvent arg0)
+	    	{
+	    		Color newColor = JColorChooser.showDialog(null,"Choose Background Color",panelAnimation2.getBackground());
+	    		panelAnimation2.changeColor(newColor);
+	    	}
+	 	};
+	 	buttonColorAnimation.addActionListener(AnimationColorListener);
+	 	
+		
+		
+		panelAnimation4.add(buttonColorAnimation);
 		
 		
 		
@@ -121,7 +150,7 @@ public class Animation extends JFrame {
 		slider.addChangeListener(new SliderChangeListener());
 		slider.setPaintTicks(true);
 		slider.setPaintTrack(true);
-		slider.setMajorTickSpacing(2);
+		slider.setMajorTickSpacing(5);
 		slider.setMinorTickSpacing(0);
 		slider.setPaintLabels(true);
 		
@@ -136,6 +165,10 @@ public class Animation extends JFrame {
 		
 		
 		panelAnimation2.setBackground(Color.white);
+		
+		ExecutorService exec = Executors.newFixedThreadPool(1);
+		exec.execute(panelAnimation2);
+		exec.shutdown();
 		
 	    
 		//image = new ImageIcon(new URL("fototapety-fale-w-wodzie.jpg")).getImage();
