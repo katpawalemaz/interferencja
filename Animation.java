@@ -169,6 +169,8 @@ public class Animation extends JFrame {
 		ExecutorService exec = Executors.newFixedThreadPool(1);
 		exec.execute(panelAnimation2);
 		exec.shutdown();
+
+		
 		
 	    
 		//image = new ImageIcon(new URL("fototapety-fale-w-wodzie.jpg")).getImage();
