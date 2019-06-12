@@ -12,21 +12,24 @@ import javax.swing.JPanel;
 
 public class AnimationPanel extends JPanel implements Runnable
 {
-	int n=0;
+	int n;	
 	int []u=new int[40];
-	int f=-1600;
+	int []yi=new int[40];
+;
+	
+	boolean active=true;
+	
+
+	int f=0;
 	int z=0;
+	
 	double y;
 	Color color;
-	int xPos=0, yPos=0;
-	
-	ArrayList<Integer> xNumbers;
-	ArrayList<Integer> yNumbers;
+
 	
 	
 	
 	AnimationPanel()
-	
 	{
 			super();
 			setPreferredSize(new Dimension(300, 300));
@@ -41,26 +44,43 @@ public class AnimationPanel extends JPanel implements Runnable
 	
 	public void run() {
 
-		while (true) {
+		while (active) {
 		
 			n++;  
 			int ii;
 			ii=0;
-			
-			
-		
-			for(ii=0;ii<39;ii++)
-				u[ii]=40+40*ii+f;
+			z++;
 			f++;
+		
+		
 			
-				
-
-			
-			if(n==1600){
+			if(n>=1600)
 				n=0;
-				f=-1600;}
+			
+			
+		
+			if(f>80*(40+Animation.lambda))
+				f=(-3200+(79*Animation.lambda));
+			if(z>120*(40+Animation.lambda))
+				z=1600+39*Animation.lambda;
 	
 			
+		
+		for(ii=0;ii<39;ii++)
+				u[ii]=-1600-(40*Animation.lambda)+(40+Animation.lambda)*(ii+1)+f;
+			
+			
+			
+			
+			for(ii=0;ii<39;ii++)
+			{
+				yi[ii]=-3200-(79*Animation.lambda)+(40+Animation.lambda)*(ii+1)+z;
+			}
+
+			
+
+			
+	
 			
 			try {
 				Thread.sleep(10);
@@ -68,36 +88,11 @@ public class AnimationPanel extends JPanel implements Runnable
 				e.printStackTrace();
 			}
 
-			repaint(); //repaint domyslnie odpali sie w EDT
+			repaint(); 
 		}
 	}
 	
-	public void list(){
-		
-		while(true){
-			xNumbers.add(n);
-			
-			y=Math.sin(n*180/3.14);
-			double yy=10*y;
-			
-			int y1=(int) yy;
-			
-			
-			yNumbers.add(y1);
-			
-			
-			
-			try {
-				Thread.sleep(10);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
 
-			
-		}
-		
-		
-	}
 	
 	
 		
@@ -110,25 +105,71 @@ public class AnimationPanel extends JPanel implements Runnable
 			Graphics2D g2 = (Graphics2D) g;
 		    g2.setStroke(new BasicStroke(7));
 		   
+			
+		    
+			g2.fillOval(295+Animation.distance/2, 45, 10, 10);
+				
+			
+			
+			g2.fillOval(295-Animation.distance/2, 45, 10, 10);
+			
+			g2.setColor(change());
+			
+			g2.fillOval(295+Animation.distance/2, 45, 10, 10);
+			
+			g2.fillOval(295-Animation.distance/2, 45, 10, 10);
+							
+			
+		//	g2.drawOval(200-n/2, 50-n/2, n, n);
+			
+			
+		//	g2.drawOval(400-n/2, 50-n/2, n, n);
+		
 			g2.setColor(color);
 			
-			g2.drawOval(200, 50, 5, 5);
-			g2.drawOval(400, 50, 5, 5);
+
+			 
 			
-			g2.drawOval(200-n/2, 50-n/2, n, n);
-			g2.drawOval(400-n/2, 50-n/2, n, n);
+			for(int ii=0;ii<39;ii++){
+				g2.drawOval(300-u[ii]/2+Animation.distance/2, 50-u[ii]/2, u[ii], u[ii]);
+				g2.drawOval(300-u[ii]/2-Animation.distance/2, 50-u[ii]/2, u[ii], u[ii]);
+				
+			}
 			
+			 
+			for(int ii=0;ii<39;ii++){
+				
+				g2.drawOval(300-yi[ii]/2+Animation.distance/2, 50-yi[ii]/2, yi[ii], yi[ii]);
+				g2.drawOval(300-yi[ii]/2-Animation.distance/2, 50-yi[ii]/2, yi[ii], yi[ii]);
+				
+			}
+			
+			
+		
+			
+			g2.setColor(Color.BLACK);
+			g2.drawRect(210, 480, 200, 7);
 			
 
 			
+			}
+
+		private Color change() {
+			// TODO Auto-generated method stub
 			
-			for(int ii=0;ii<39;ii++){
-				g2.drawOval(200-u[ii]/2, 50-u[ii]/2, u[ii], u[ii]);
-				g2.drawOval(400-u[ii]/2, 50-u[ii]/2, u[ii], u[ii]);
-				
-			}
-				
-			}
+			Color k=null;
+			if(Animation.lambda>=30 && Animation.lambda<=100)
+				k=Color.green;
+			if(Animation.lambda>100 && Animation.lambda<=(590-470))
+				k=Color.green;
+			if(Animation.lambda>(590-470) && Animation.lambda<=(630-470))
+				k=Color.orange;
+			if(Animation.lambda>(630-470) && Animation.lambda<=(700-470))
+				k=Color.red;
+			
+			
+			return k;
+		}
 			
 			
 }
